@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  http:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    container_name: http
+    networks:
+      - tp3-network
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/app
+      - ./config/default.conf:/etc/nginx/conf.d/default.conf
+
+  script:
+    build:
+      context: .
+      dockerfile: Dockerfile-php
+    container_name: script
+    networks:
+      - tp3-network
+    volumes:
+      - ./src:/app
+
+  data:
+    build:
+      context: .
+      dockerfile: Dockerfile-mariadb
+    container_name: data
+    networks:
+      - tp3-network
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db/create.sql:/docker-entrypoint-initdb.d/create.sql
+
+networks:
+  tp3-network:
+    driver: bridge
