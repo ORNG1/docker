@@ -10,4 +10,4 @@ docker rmi -f $(docker images -aq)
 
 vim docker-compose.xml
 
-docker compose up -d
+docker compose -p "stack" up -d
